@@ -1,0 +1,29 @@
+
+services:
+  tickets_db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tickets_db
+    networks:
+        - tickets-network
+  tickets_server:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - tickets_db
+    networks:
+        - tickets-network
+    environment:
+      DB_HOST: tickets_db
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: tickets_db
+      DB_PORT: 5432
+networks:
+    tickets-network:
+        driver: bridge
