@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsNumber, IsString, Length, Matches } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -13,4 +13,6 @@ export class CreateUserDto {
       'Password must contain at least one number, one lowercase letter, one uppercase letter, and at least 8 characters',
   })
   password: string;
+  @IsNumber()
+  companyId: number;
 }
