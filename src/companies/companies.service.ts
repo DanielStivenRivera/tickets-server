@@ -13,4 +13,8 @@ export class CompaniesService {
   async getAllCompanies() {
     return await this.companyRepository.find();
   }
+
+  async getCompanyById(id: number) {
+    return await this.companyRepository.findOneBy({ id });
+  }
 }
