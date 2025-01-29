@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CompaniesModule } from './companies/companies.module';
 import { ProjectsModule } from './projects/projects.module';
+import { UserHistoriesModule } from './user-histories/user-histories.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProjectsModule } from './projects/projects.module';
     AuthModule,
     CompaniesModule,
     ProjectsModule,
+    UserHistoriesModule,
   ],
   controllers: [],
   providers: [],

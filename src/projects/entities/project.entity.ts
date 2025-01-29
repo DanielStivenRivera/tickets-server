@@ -7,10 +7,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Company } from '../../companies/entities/company.entity';
+import { UserHistory } from '../../user-histories/entities/user-history.entity';
 
 @Entity('projects')
 export class Project {
@@ -41,4 +43,9 @@ export class Project {
   updateStatusAfterRestore() {
     this.isActive = true;
   }
+  @OneToMany(
+    () => UserHistory,
+    (userHistory: UserHistory) => userHistory.project,
+  )
+  userHistories: UserHistory[];
 }
