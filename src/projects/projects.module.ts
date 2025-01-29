@@ -4,7 +4,6 @@ import { ProjectsController } from './projects.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { CompaniesModule } from '../companies/companies.module';
-import { CompaniesService } from '../companies/companies.service';
 
 @Module({
   providers: [ProjectsService],
