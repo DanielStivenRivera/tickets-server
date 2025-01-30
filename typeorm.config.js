@@ -12,6 +12,10 @@ const dataSource = new DataSource({
   entities: [path.join(__dirname, 'src', '**', '*.entity{.ts,.js}')],
   migrations: [path.join(__dirname, 'src', 'migrations', '*{.ts,.js}')],
   synchronize: false,
+  ssl: {
+    rejectUnauthorized: false,
+    ca: process.env.DB_SSL_CA,
+  },
 });
 
 module.exports = dataSource;
