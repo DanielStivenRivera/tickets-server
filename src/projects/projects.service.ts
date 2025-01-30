@@ -20,12 +20,18 @@ export class ProjectsService {
     private readonly companiesService: CompaniesService,
   ) {}
 
-  async createProject(createProjectDto: CreateProjectDto) {
+  async createProject(
+    createProjectDto: CreateProjectDto,
+    userData: PayloadDto,
+  ) {
     const company = await this.companiesService.getCompanyById(
       createProjectDto.companyId,
     );
     if (!company) {
       throw new NotFoundException('Company not found');
+    }
+    if (company.id !== userData.companyId) {
+      throw new UnauthorizedException('user doesnt have access to company');
     }
     const project = this.projectRepository.create({
       ...createProjectDto,

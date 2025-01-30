@@ -14,5 +14,6 @@ import { CompaniesModule } from '../companies/companies.module';
   ],
   providers: [UserHistoriesService],
   controllers: [UserHistoriesController],
+  exports: [UserHistoriesService, TypeOrmModule],
 })
 export class UserHistoriesModule {}

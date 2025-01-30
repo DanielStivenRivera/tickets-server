@@ -13,7 +13,6 @@ import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { GetProjectParamsDto } from './dto/get-project-params.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { PayloadDto } from '../auth/dto/payload.dto';
 
@@ -24,14 +23,20 @@ export class ProjectsController {
   //Return all projects per company
   @Get()
   @UseGuards(JwtAuthGuard)
-  getProjects(@Query() queryParams: GetProjectParamsDto) {
-    return this.projectsService.getAllProjects(queryParams);
+  getProjects(@CurrentUser() userData: PayloadDto) {
+    console.log(userData);
+    return this.projectsService.getAllProjects({
+      companyId: userData.companyId,
+    });
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  createProject(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectsService.createProject(createProjectDto);
+  createProject(
+    @Body() createProjectDto: CreateProjectDto,
+    @CurrentUser() userData: PayloadDto,
+  ) {
+    return this.projectsService.createProject(createProjectDto, userData);
   }
 
   @Patch(':id')

@@ -1,7 +1,7 @@
-import { IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
-export class CreateUserHistoryDto {
+export class CreateTaskDto {
   @ApiProperty()
   @IsString()
   title: string;
@@ -10,5 +10,5 @@ export class CreateUserHistoryDto {
   description: string;
   @ApiProperty()
   @IsNumber()
-  projectId: number;
+  userHistoryId: number;
 }
