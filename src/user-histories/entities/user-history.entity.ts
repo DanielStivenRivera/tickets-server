@@ -4,11 +4,13 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Project } from '../../projects/entities/project.entity';
+import { Task } from '../../tasks/entities/task.entity';
 
 @Entity('user_histories')
 export class UserHistory {
@@ -18,8 +20,8 @@ export class UserHistory {
   title: string;
   @Column({ nullable: false })
   description: string;
-  @OneToMany(() => Project, (project: Project) => project.userHistories)
-  @JoinColumn({ name: 'projectId', referencedColumnName: 'id' })
+  @ManyToOne(() => Project, (project: Project) => project.userHistories)
+  @JoinColumn({ name: 'projectId' })
   project: Project;
   @Column()
   projectId: number;
@@ -29,4 +31,6 @@ export class UserHistory {
   updatedAt: Date;
   @DeleteDateColumn()
   deletedAt: Date;
+  @OneToMany(() => Task, (tasks: Task) => tasks.userHistory)
+  tasks: Task[];
 }

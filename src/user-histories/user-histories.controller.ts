@@ -58,9 +58,10 @@ export class UserHistoriesController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   deleteUserHistory(
-    @Param(':id') id: number,
+    @Param('id') id: number,
     @CurrentUser() userData: PayloadDto,
   ) {
+    console.log(id, userData);
     return this.userHistoriesService.deleteUserHistory(id, userData);
   }
 }

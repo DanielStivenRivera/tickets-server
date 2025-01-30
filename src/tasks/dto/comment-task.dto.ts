@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class ValidateTokenDto {
+export class CommentTaskDto {
   @ApiProperty()
   @IsString()
-  token: string;
+  comment: string;
 }

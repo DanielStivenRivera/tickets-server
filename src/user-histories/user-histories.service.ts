@@ -22,8 +22,8 @@ export class UserHistoriesService {
   ) {}
 
   async getUserHistories(searchUserHistoryDto: SearchUserHistoryDto) {
-    return await this.userHistoriesRepository.findBy({
-      projectId: searchUserHistoryDto.projectId,
+    return await this.userHistoriesRepository.find({
+      where: { projectId: searchUserHistoryDto.projectId },
     });
   }
 
@@ -35,7 +35,14 @@ export class UserHistoriesService {
       createUserHistoryDto.projectId,
       userData.companyId,
     );
-    return await this.userHistoriesRepository.save(createUserHistoryDto);
+    const project = await this.projectsService.getProjectById(
+      createUserHistoryDto.projectId,
+    );
+    return await this.userHistoriesRepository.save({
+      project,
+      ...createUserHistoryDto,
+      tasks: [],
+    });
   }
 
   async updateUserHistory(

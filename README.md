@@ -27,3 +27,5 @@ $ npm run test:cov
 Se debe seleccionar la compañia a la cual tiene acceso.
 
 </p>
+
+![sql_map.png](sql_map.png)
