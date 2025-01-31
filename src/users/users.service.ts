@@ -19,6 +19,7 @@ export class UsersService {
     user.email = createUserDto.email;
     user.name = createUserDto.name;
     user.password = await bcrypt.hash(createUserDto.password, 10);
+    user.companyId = createUserDto.companyId;
     return await this.userRepository.save(user);
   }
 
