@@ -41,6 +41,7 @@ export class ProjectsService {
   }
 
   async getProjectById(id: number) {
+    console.log(typeof id);
     return await this.projectRepository.findOneBy({ id });
   }
 

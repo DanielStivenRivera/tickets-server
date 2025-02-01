@@ -57,7 +57,8 @@ export class ProjectsController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  getProjectById(@Param() id: number) {
+  getProjectById(@Param('id') id: number) {
+    console.log(id);
     return this.projectsService.getProjectById(id);
   }
 }
