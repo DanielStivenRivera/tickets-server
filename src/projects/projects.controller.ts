@@ -54,4 +54,10 @@ export class ProjectsController {
   deleteProject(@Param('id') id: number, @CurrentUser() user: PayloadDto) {
     return this.projectsService.deleteProject(id, user);
   }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  getProjectById(@Param() id: number) {
+    return this.projectsService.getProjectById(id);
+  }
 }
