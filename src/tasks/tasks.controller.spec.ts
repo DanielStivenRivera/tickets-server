@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { PayloadDto } from '../auth/dto/payload.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskChangeStatusDto } from './dto/task-change-status.dto';
 import { CommentTaskDto } from './dto/comment-task.dto';
@@ -49,37 +48,21 @@ describe('TasksController', () => {
         description: 'desc',
         userHistoryId: 1,
       };
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
 
-      await controller.createTask(createTaskDto, userData);
-      expect(tasksService.createTask).toHaveBeenCalledWith(
-        createTaskDto,
-        userData,
-      );
+      await controller.createTask(createTaskDto);
+      expect(tasksService.createTask).toHaveBeenCalledWith(createTaskDto);
     });
   });
 
   describe('updateTask', () => {
     it('should call tasksService.updateTask with correct parameters', async () => {
       const updateTaskDto: UpdateTaskDto = { title: 'Updated Task' };
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
       const taskId = 1;
 
-      await controller.updateTask(updateTaskDto, taskId, userData);
+      await controller.updateTask(updateTaskDto, taskId);
       expect(tasksService.updateTask).toHaveBeenCalledWith(
         taskId,
         updateTaskDto,
-        userData,
       );
     });
   });
@@ -89,19 +72,12 @@ describe('TasksController', () => {
       const taskChangeStatusDto: TaskChangeStatusDto = {
         status: TaskStatus.IN_PROGRESS,
       };
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
       const taskId = 1;
 
-      await controller.changeStatus(taskChangeStatusDto, taskId, userData);
+      await controller.changeStatus(taskChangeStatusDto, taskId);
       expect(tasksService.changeTasksStatus).toHaveBeenCalledWith(
         taskId,
         taskChangeStatusDto,
-        userData,
       );
     });
   });
@@ -109,53 +85,31 @@ describe('TasksController', () => {
   describe('commentTask', () => {
     it('should call tasksService.commentTask with correct parameters', async () => {
       const commentTaskDto: CommentTaskDto = { comment: 'Nice job' };
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
       const taskId = 1;
 
-      await controller.commentTask(commentTaskDto, taskId, userData);
+      await controller.commentTask(commentTaskDto, taskId);
       expect(tasksService.commentTask).toHaveBeenCalledWith(
         taskId,
         commentTaskDto,
-        userData,
       );
     });
   });
 
   describe('deleteTask', () => {
     it('should call tasksService.removeTask with correct parameters', async () => {
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
       const taskId = 1;
 
-      await controller.deleteTask(taskId, userData);
-      expect(tasksService.removeTask).toHaveBeenCalledWith(taskId, userData);
+      await controller.deleteTask(taskId);
+      expect(tasksService.removeTask).toHaveBeenCalledWith(taskId);
     });
   });
 
   describe('getTasks', () => {
     it('should call tasksService.getTasks with correct parameters', async () => {
       const searchTasksDto: SearchTasksDto = { userHistoryId: 1 };
-      const userData: PayloadDto = {
-        id: 1,
-        companyId: 1,
-        name: 'name',
-        email: 'email',
-      };
 
-      await controller.getTasks(searchTasksDto, userData);
-      expect(tasksService.getTasks).toHaveBeenCalledWith(
-        searchTasksDto,
-        userData,
-      );
+      await controller.getTasks(searchTasksDto);
+      expect(tasksService.getTasks).toHaveBeenCalledWith(searchTasksDto);
     });
   });
 

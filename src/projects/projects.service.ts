@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
@@ -20,18 +16,12 @@ export class ProjectsService {
     private readonly companiesService: CompaniesService,
   ) {}
 
-  async createProject(
-    createProjectDto: CreateProjectDto,
-    userData: PayloadDto,
-  ) {
+  async createProject(createProjectDto: CreateProjectDto) {
     const company = await this.companiesService.getCompanyById(
       createProjectDto.companyId,
     );
     if (!company) {
       throw new NotFoundException('Company not found');
-    }
-    if (company.id !== userData.companyId) {
-      throw new UnauthorizedException('user doesnt have access to company');
     }
     const project = this.projectRepository.create({
       ...createProjectDto,
@@ -44,19 +34,10 @@ export class ProjectsService {
     return await this.projectRepository.findOneBy({ id });
   }
 
-  async updateProject(
-    id: number,
-    updateProjectDto: UpdateProjectDto,
-    userData: PayloadDto,
-  ) {
+  async updateProject(id: number, updateProjectDto: UpdateProjectDto) {
     const project = await this.getProjectById(id);
     if (!project) {
       throw new NotFoundException('Project not found');
-    }
-    if (project.companyId !== userData.companyId) {
-      throw new UnauthorizedException(
-        'cannot update projects from other companies',
-      );
     }
     return await this.projectRepository.save({
       ...project,
@@ -64,15 +45,10 @@ export class ProjectsService {
     });
   }
 
-  async deleteProject(id: number, user: PayloadDto) {
+  async deleteProject(id: number) {
     const project = await this.getProjectById(id);
     if (!project) {
       throw new NotFoundException('Project not found');
-    }
-    if (user.companyId !== project.companyId) {
-      throw new UnauthorizedException(
-        'you can delete projects from other companies',
-      );
     }
     return await this.projectRepository.update(id, {
       deletedAt: new Date(),

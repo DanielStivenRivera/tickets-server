@@ -16,6 +16,7 @@ describe('CompaniesService', () => {
           provide: getRepositoryToken(Company),
           useValue: {
             find: jest.fn(),
+            findOneBy: jest.fn(),
           },
         },
       ],
@@ -38,31 +39,40 @@ describe('CompaniesService', () => {
         { id: 2, name: 'Company B' },
       ];
 
-      // Simula el comportamiento del método `find` del repositorio
       jest
         .spyOn(companyRepository, 'find')
         .mockResolvedValue(mockCompanies as any);
 
       const result = await service.getAllCompanies();
 
-      // Verifica que el método `find` fue llamado con los parámetros correctos
       expect(companyRepository.find).toHaveBeenCalled();
 
-      // Verifica que el resultado es el esperado
       expect(result).toEqual(mockCompanies);
     });
 
     it('should return an empty array if no companies are found', async () => {
-      // Simula que no hay compañías en la base de datos
       jest.spyOn(companyRepository, 'find').mockResolvedValue([]);
 
       const result = await service.getAllCompanies();
-
-      // Verifica que el método `find` fue llamado con los parámetros correctos
       expect(companyRepository.find).toHaveBeenCalled();
-
-      // Verifica que el resultado es un array vacío
       expect(result).toEqual([]);
     });
+  });
+
+  it('should return a company when search by id', async () => {
+    const company: Company = {
+      email: 'email',
+      name: 'name',
+      projects: [],
+      nit: 'nit',
+      address: 'address',
+      phone: 'phone',
+      id: 1,
+    };
+    jest
+      .spyOn(companyRepository, 'findOneBy')
+      .mockResolvedValue(Promise.resolve(company));
+    const resp = await service.getCompanyById(1);
+    expect(resp).toEqual(company);
   });
 });

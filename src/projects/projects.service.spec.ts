@@ -5,7 +5,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CompaniesService } from '../companies/companies.service';
 import { Project } from './entities/project.entity';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { PayloadDto } from '../auth/dto/payload.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
@@ -106,14 +105,13 @@ describe('ProjectsService', () => {
     it('should be able to update project', async () => {
       const project = { id: 1, name: 'Old Project', companyId: 1 } as any;
       const updateProjectDto: UpdateProjectDto = { title: 'Updated Project' };
-      const userData: PayloadDto = { companyId: 1 } as PayloadDto;
 
       jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
       jest
         .spyOn(projectRepository, 'save')
         .mockResolvedValue({ ...project, ...updateProjectDto });
 
-      const result = await service.updateProject(1, updateProjectDto, userData);
+      const result = await service.updateProject(1, updateProjectDto);
       expect(result).toEqual({ ...project, ...updateProjectDto });
       expect(projectRepository.save).toHaveBeenCalledWith({
         ...project,
@@ -124,21 +122,8 @@ describe('ProjectsService', () => {
     it('should be able to throw error if project dont exists', async () => {
       jest.spyOn(service, 'getProjectById').mockResolvedValue(null);
       await expect(
-        service.updateProject(999, { title: 'Invalid' }, {
-          companyId: 1,
-        } as PayloadDto),
+        service.updateProject(999, { title: 'Invalid' }),
       ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should be able to throw error if user try to update project from another company', async () => {
-      const project = { id: 1, title: 'Project A', companyId: 1 } as any;
-      const userData: PayloadDto = { companyId: 2 } as PayloadDto;
-
-      jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
-
-      await expect(
-        service.updateProject(1, { title: 'Updated' }, userData),
-      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -150,14 +135,13 @@ describe('ProjectsService', () => {
         companyId: 1,
         description: 'desc',
       } as any;
-      const userData: PayloadDto = { companyId: 1 } as PayloadDto;
 
       jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
       jest
         .spyOn(projectRepository, 'update')
         .mockResolvedValue({ affected: 1 } as any);
 
-      const result = await service.deleteProject(1, userData);
+      const result = await service.deleteProject(1);
       expect(result).toEqual({ affected: 1 });
       expect(projectRepository.update).toHaveBeenCalledWith(1, {
         deletedAt: expect.any(Date),
@@ -167,19 +151,8 @@ describe('ProjectsService', () => {
 
     it('should be able to throw error if project dont exists', async () => {
       jest.spyOn(service, 'getProjectById').mockResolvedValue(null);
-      await expect(
-        service.deleteProject(999, { companyId: 1 } as PayloadDto),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should be able to throw error if user try to delete project from another company', async () => {
-      const project = { id: 1, title: 'Project A', companyId: 1 } as any;
-      const userData: PayloadDto = { companyId: 2 } as PayloadDto;
-
-      jest.spyOn(service, 'getProjectById').mockResolvedValue(project);
-
-      await expect(service.deleteProject(1, userData)).rejects.toThrow(
-        UnauthorizedException,
+      await expect(service.deleteProject(999)).rejects.toThrow(
+        NotFoundException,
       );
     });
   });
