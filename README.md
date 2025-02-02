@@ -22,10 +22,4 @@
 $ npm run test:cov
 ```
 
-## Consideraciones
-<p>Un usuario solo puede estar adjunto a una compañia, es decir que al crear un nuevo usuario, en el formulario de registro,
-Se debe seleccionar la compañia a la cual tiene acceso.
-
-</p>
-
 ![sql_map.png](sql_map.png)
