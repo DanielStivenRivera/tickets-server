@@ -21,5 +21,4 @@
 # test coverage
 $ npm run test:cov
 ```
-
 ![sql_map.png](sql_map.png)
