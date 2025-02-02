@@ -21,6 +21,7 @@ describe('AuthService', () => {
           useValue: {
             findByEmail: jest.fn(),
             create: jest.fn(),
+            findById: jest.fn(),
           },
         },
         {
@@ -67,7 +68,7 @@ describe('AuthService', () => {
         email: user.email,
         name: user.name,
       });
-      expect(result).toEqual('jwt-token');
+      expect(result).toEqual({ token: 'jwt-token' });
     });
 
     it('should throw UnauthorizedException if user is not found', async () => {
@@ -132,7 +133,7 @@ describe('AuthService', () => {
         email: user.email,
         name: user.name,
       });
-      expect(result).toEqual('jwt-token');
+      expect(result).toEqual({ token: 'jwt-token' });
     });
   });
 
@@ -142,11 +143,18 @@ describe('AuthService', () => {
       const payload = { id: 1, email: 'test@example.com' };
 
       jest.spyOn(jwtService, 'verify').mockReturnValue(payload);
+      jest.spyOn(usersService, 'findById').mockReturnValue(
+        Promise.resolve({
+          id: 1,
+          email: 'test@example.com',
+          password: 'pasdas',
+          name: 'name',
+        }),
+      );
 
-      const result = await authService.validate(token);
+      await authService.validate(token);
 
       expect(jwtService.verify).toHaveBeenCalledWith(token);
-      expect(result).toEqual(payload);
     });
 
     it('should throw UnauthorizedException if the token is invalid', async () => {

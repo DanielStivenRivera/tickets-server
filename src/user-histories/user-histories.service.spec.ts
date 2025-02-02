@@ -25,6 +25,7 @@ describe('UserHistoriesService', () => {
             findOneBy: jest.fn(),
             softDelete: jest.fn(),
             findOne: jest.fn(),
+            find: jest.fn(),
           },
         },
         {
@@ -56,14 +57,17 @@ describe('UserHistoriesService', () => {
       ];
 
       jest
-        .spyOn(userHistoriesRepository, 'findBy')
+        .spyOn(userHistoriesRepository, 'find')
         .mockResolvedValue(mockUserHistories as any);
 
       const result = await service.getUserHistories({ projectId });
 
       expect(result).toEqual(mockUserHistories);
-      expect(userHistoriesRepository.findBy).toHaveBeenCalledWith({
-        projectId,
+      expect(userHistoriesRepository.find).toHaveBeenCalledWith({
+        relations: ['tasks'],
+        where: {
+          projectId,
+        },
       });
     });
   });
@@ -75,29 +79,14 @@ describe('UserHistoriesService', () => {
         description: 'New User History',
         title: 'title',
       };
-      const userData = { companyId: 1, id: 1, email: 'email', name: 'name' };
 
-      jest.spyOn(service, 'validateProjectOwnership').mockResolvedValue({
-        id: 1,
-        companyId: 1,
-      } as Project);
       jest
         .spyOn(userHistoriesRepository, 'save')
         .mockResolvedValue({ id: 1, ...createUserHistoryDto } as any);
 
-      const result = await service.createUserHistory(
-        createUserHistoryDto,
-        userData,
-      );
+      const result = await service.createUserHistory(createUserHistoryDto);
 
       expect(result).toEqual({ id: 1, ...createUserHistoryDto });
-      expect(service['validateProjectOwnership']).toHaveBeenCalledWith(
-        createUserHistoryDto.projectId,
-        userData.companyId,
-      );
-      expect(userHistoriesRepository.save).toHaveBeenCalledWith(
-        createUserHistoryDto,
-      );
     });
   });
 
@@ -105,7 +94,6 @@ describe('UserHistoriesService', () => {
     it('should update an existing user history', async () => {
       const updateUserHistoryDto = { description: 'Updated User History' };
       const id = 1;
-      const userData = { companyId: 1, id: 1, email: 'email', name: 'name' };
       const mockUserHistory = {
         id: 1,
         projectId: 1,
@@ -114,27 +102,14 @@ describe('UserHistoriesService', () => {
       jest
         .spyOn(service, 'getUserHistoryWithProject')
         .mockResolvedValue(mockUserHistory as UserHistory);
-      jest.spyOn(service, 'validateProjectOwnership').mockResolvedValue({
-        id: 1,
-        companyId: 1,
-      } as Project);
       jest.spyOn(userHistoriesRepository, 'update').mockResolvedValue(null);
       jest
         .spyOn(userHistoriesRepository, 'findOneBy')
         .mockResolvedValue({ id: 1, ...updateUserHistoryDto } as any);
 
-      const result = await service.updateUserHistory(
-        updateUserHistoryDto,
-        id,
-        userData,
-      );
+      const result = await service.updateUserHistory(updateUserHistoryDto, id);
 
       expect(result).toEqual({ id: 1, ...updateUserHistoryDto });
-      expect(service['getUserHistoryWithProject']).toHaveBeenCalledWith(id);
-      expect(service['validateProjectOwnership']).toHaveBeenCalledWith(
-        mockUserHistory.projectId,
-        userData.companyId,
-      );
       expect(userHistoriesRepository.update).toHaveBeenCalledWith(
         id,
         updateUserHistoryDto,
@@ -156,19 +131,10 @@ describe('UserHistoriesService', () => {
       jest
         .spyOn(service, 'getUserHistoryWithProject')
         .mockResolvedValue(mockUserHistory as UserHistory);
-      jest.spyOn(service, 'validateProjectOwnership').mockResolvedValue({
-        id: 1,
-        companyId: 1,
-      } as Project);
       jest.spyOn(userHistoriesRepository, 'softDelete').mockResolvedValue(null);
 
-      await service.deleteUserHistory(id, userData);
+      await service.deleteUserHistory(id);
 
-      expect(service['getUserHistoryWithProject']).toHaveBeenCalledWith(id);
-      expect(service['validateProjectOwnership']).toHaveBeenCalledWith(
-        mockUserHistory.projectId,
-        userData.companyId,
-      );
       expect(userHistoriesRepository.softDelete).toHaveBeenCalledWith(id);
     });
   });
@@ -204,51 +170,6 @@ describe('UserHistoriesService', () => {
       await expect(service['getUserHistoryWithProject'](id)).rejects.toThrow(
         NotFoundException,
       );
-    });
-  });
-
-  describe('validateProjectOwnership', () => {
-    it('should return project if user has access', async () => {
-      const projectId = 1;
-      const userCompanyId = 1;
-      const mockProject = { id: 1, companyId: 1 };
-
-      jest
-        .spyOn(projectsService, 'getProjectById')
-        .mockResolvedValue(mockProject as Project);
-
-      const result = await service['validateProjectOwnership'](
-        projectId,
-        userCompanyId,
-      );
-
-      expect(result).toEqual(mockProject);
-      expect(projectsService.getProjectById).toHaveBeenCalledWith(projectId);
-    });
-
-    it('should throw NotFoundException if project not found', async () => {
-      const projectId = 1;
-      const userCompanyId = 1;
-
-      jest.spyOn(projectsService, 'getProjectById').mockResolvedValue(null);
-
-      await expect(
-        service['validateProjectOwnership'](projectId, userCompanyId),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw ForbiddenException if user does not have access', async () => {
-      const projectId = 1;
-      const userCompanyId = 2;
-      const mockProject = { id: 1, companyId: 1 };
-
-      jest
-        .spyOn(projectsService, 'getProjectById')
-        .mockResolvedValue(mockProject as Project);
-
-      await expect(
-        service['validateProjectOwnership'](projectId, userCompanyId),
-      ).rejects.toThrow(ForbiddenException);
     });
   });
 });

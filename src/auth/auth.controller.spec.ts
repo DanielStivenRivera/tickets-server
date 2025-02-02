@@ -39,12 +39,14 @@ describe('AuthController', () => {
 
       const token = 'jwt-token';
 
-      jest.spyOn(authService, 'login').mockResolvedValue(token);
+      jest
+        .spyOn(authService, 'login')
+        .mockResolvedValue(Promise.resolve({ token }));
 
       const result = await authController.login(loginDto);
 
       expect(authService.login).toHaveBeenCalledWith(loginDto);
-      expect(result).toEqual(token);
+      expect(result).toEqual({ token });
     });
   });
 
@@ -58,12 +60,14 @@ describe('AuthController', () => {
 
       const token = 'jwt-token';
 
-      jest.spyOn(authService, 'register').mockResolvedValue(token);
+      jest
+        .spyOn(authService, 'register')
+        .mockResolvedValue(Promise.resolve({ token }));
 
       const result = await authController.register(createUserDto);
 
       expect(authService.register).toHaveBeenCalledWith(createUserDto);
-      expect(result).toEqual(token);
+      expect(result).toEqual({ token });
     });
   });
 });

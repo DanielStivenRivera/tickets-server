@@ -16,8 +16,6 @@ export class Company {
   phone: string;
   @Column({ nullable: false })
   address: string;
-  @OneToMany(() => User, (user: User) => user.company)
-  users: User[];
   @OneToMany(() => Project, (project: Project) => project.company)
   projects: Project[];
 }

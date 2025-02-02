@@ -34,20 +34,20 @@ describe('CompaniesController', () => {
         {
           id: 1,
           name: 'Company A',
-          users: [],
           nit: '1231232',
           address: 'address',
           phone: '12312222',
           email: 'email',
+          projects: [],
         },
         {
           id: 2,
           name: 'Company B',
-          users: [],
           nit: '1231232',
           address: 'address',
           phone: '12312222',
           email: 'email',
+          projects: [],
         },
       ];
       jest.spyOn(companiesService, 'getAllCompanies').mockResolvedValue(result);

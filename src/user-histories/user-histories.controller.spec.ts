@@ -5,7 +5,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SearchUserHistoryDto } from './dto/search-user-history.dto';
 import { CreateUserHistoryDto } from './dto/create-user-history.dto';
 import { UpdateUserHistoryDto } from './dto/update-user-history.dto';
-import { PayloadDto } from '../auth/dto/payload.dto';
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -90,27 +89,17 @@ describe('UserHistoriesController', () => {
         description: 'New User History',
         title: 'title',
       };
-      const userData: PayloadDto = {
-        companyId: 1,
-        id: 1,
-        email: 'email',
-        name: 'name',
-      };
       const mockCreatedUserHistory = { id: 1, ...createUserHistoryDto };
 
       jest
         .spyOn(userHistoriesService, 'createUserHistory')
         .mockResolvedValue(mockCreatedUserHistory as any);
 
-      const result = await controller.createUserHistory(
-        createUserHistoryDto,
-        userData,
-      );
+      const result = await controller.createUserHistory(createUserHistoryDto);
 
       expect(result).toEqual(mockCreatedUserHistory);
       expect(userHistoriesService.createUserHistory).toHaveBeenCalledWith(
         createUserHistoryDto,
-        userData,
       );
     });
   });
@@ -121,12 +110,6 @@ describe('UserHistoriesController', () => {
         description: 'Updated User History',
       };
       const id = 1;
-      const userData: PayloadDto = {
-        companyId: 1,
-        id: 1,
-        email: 'email',
-        name: 'name',
-      };
       const mockUpdatedUserHistory = { id: 1, ...updateUserHistoryDto };
 
       jest
@@ -135,7 +118,6 @@ describe('UserHistoriesController', () => {
 
       const result = await controller.updateUserHistory(
         updateUserHistoryDto,
-        userData,
         id,
       );
 
@@ -143,7 +125,6 @@ describe('UserHistoriesController', () => {
       expect(userHistoriesService.updateUserHistory).toHaveBeenCalledWith(
         updateUserHistoryDto,
         id,
-        userData,
       );
     });
   });
@@ -151,24 +132,15 @@ describe('UserHistoriesController', () => {
   describe('deleteUserHistory', () => {
     it('should delete an existing user history', async () => {
       const id = 1;
-      const userData: PayloadDto = {
-        companyId: 1,
-        id: 1,
-        email: 'email',
-        name: 'name',
-      };
 
       jest
         .spyOn(userHistoriesService, 'deleteUserHistory')
         .mockResolvedValue(undefined);
 
-      const result = await controller.deleteUserHistory(id, userData);
+      const result = await controller.deleteUserHistory(id);
 
       expect(result).toBeUndefined();
-      expect(userHistoriesService.deleteUserHistory).toHaveBeenCalledWith(
-        id,
-        userData,
-      );
+      expect(userHistoriesService.deleteUserHistory).toHaveBeenCalledWith(id);
     });
   });
 });

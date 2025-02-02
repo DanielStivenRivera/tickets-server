@@ -12,8 +12,6 @@ import {
 import { TasksService } from './tasks.service';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { PayloadDto } from '../auth/dto/payload.dto';
 import { TaskChangeStatusDto } from './dto/task-change-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CommentTaskDto } from './dto/comment-task.dto';
@@ -25,21 +23,14 @@ export class TasksController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  createTask(
-    @Body() createTaskDto: CreateTaskDto,
-    @CurrentUser() userData: PayloadDto,
-  ) {
-    return this.tasksService.createTask(createTaskDto, userData);
+  createTask(@Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.createTask(createTaskDto);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  updateTask(
-    @Body() updateTaskDto: UpdateTaskDto,
-    @Param('id') id: number,
-    @CurrentUser() userData: PayloadDto,
-  ) {
-    return this.tasksService.updateTask(id, updateTaskDto, userData);
+  updateTask(@Body() updateTaskDto: UpdateTaskDto, @Param('id') id: number) {
+    return this.tasksService.updateTask(id, updateTaskDto);
   }
 
   @Post(':id/changeStatus')
@@ -47,38 +38,26 @@ export class TasksController {
   changeStatus(
     @Body() taskChangeStatusDto: TaskChangeStatusDto,
     @Param('id') id: number,
-    @CurrentUser() userData: PayloadDto,
   ) {
-    return this.tasksService.changeTasksStatus(
-      id,
-      taskChangeStatusDto,
-      userData,
-    );
+    return this.tasksService.changeTasksStatus(id, taskChangeStatusDto);
   }
 
   @Post(':id/comment')
   @UseGuards(JwtAuthGuard)
-  commentTask(
-    @Body() commentTaskDto: CommentTaskDto,
-    @Param('id') id: number,
-    @CurrentUser() userData: PayloadDto,
-  ) {
-    return this.tasksService.commentTask(id, commentTaskDto, userData);
+  commentTask(@Body() commentTaskDto: CommentTaskDto, @Param('id') id: number) {
+    return this.tasksService.commentTask(id, commentTaskDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  deleteTask(@Param('id') id: number, @CurrentUser() useData: PayloadDto) {
-    return this.tasksService.removeTask(id, useData);
+  deleteTask(@Param('id') id: number) {
+    return this.tasksService.removeTask(id);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  getTasks(
-    @Query() searchTasksDto: SearchTasksDto,
-    @CurrentUser() userData: PayloadDto,
-  ) {
-    return this.tasksService.getTasks(searchTasksDto, userData);
+  getTasks(@Query() searchTasksDto: SearchTasksDto) {
+    return this.tasksService.getTasks(searchTasksDto);
   }
 
   @Get(':id/logs')
